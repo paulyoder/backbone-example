@@ -5,7 +5,17 @@
     <script type='text/javascript' src='scripts/underscore-min.js'></script>
     <script type='text/javascript' src='scripts/json2.js'></script>
     <script type='text/javascript' src='scripts/backbone-min.js'></script>
+    <script type='text/javascript' src='scripts/backbone.modelbinding.min.js'></script>
     <script type='text/javascript' src='scripts/backbone-example.js'></script>
+
+    <script type='text/template' id='details-template'>
+      <tr>
+        <th>Type</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Amount</th>
+      </tr>
+    </script>
 
     <script type='text/template' id='row-template'>
       <td>
@@ -17,13 +27,5 @@
     </script>
   </head>
   <body>
-    <table id='grid'>
-      <tr>
-        <th>Type</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Amount</th>
-      </tr>
-    </table>
   </body>
 </html>
