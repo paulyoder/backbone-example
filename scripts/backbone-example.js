@@ -8,6 +8,10 @@
       //this.bind('change:amount', this.onAmountChanged);
     },
 
+    keypress: function(data) {
+      alert('start here');
+    },
+
     onAmountChanged: function() {
       console.log('onAmountChanged');
       this.set({price: 0, quantity: 0});
@@ -56,7 +60,7 @@
       var value = $(e.currentTarget).val();
       var data = {};
       data[property] = value;
-      this.model.set(data);
+      this.model.keypress(data);
     }
   });
  
