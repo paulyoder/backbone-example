@@ -2,25 +2,24 @@
 
   window.Detail = Backbone.Model.extend({
     initialize: function() {
-      _.bindAll(this, 'calculateAmount', 'onAmountChanged');
-      this.bind('change:price', this.calculateAmount);
-      this.bind('change:quantity', this.calculateAmount);
-      //this.bind('change:amount', this.onAmountChanged);
+      _.bindAll(this, 'calculateAmount', 'keyup');
     },
 
-    keypress: function(data) {
-      alert('start here');
-    },
-
-    onAmountChanged: function() {
-      console.log('onAmountChanged');
-      this.set({price: 0, quantity: 0});
+    keyup: function(data) {
+      if (data['price'] != null && data['price'] != this.get('price')) {
+        this.set({price: data['price']}, {silent: true});
+        this.calculateAmount();
+      } else if (data['quantity'] != null && data['quantity'] != this.get('quantity')) {
+        this.set({quantity: data['quantity']}, {silent: true});
+        this.calculateAmount();
+      } else if (data['amount'] != null && data['amount'] != this.get('amount')) {
+        this.set({amount: data['amount']}, {silent: true});
+        this.set({price: ''});
+      }
     },
 
     calculateAmount: function() {
-      var price = this.get('price');
-      var quantity = this.get('quantity');
-      this.set({amount: (price * quantity)});
+      this.set({amount: (this.get('quantity') * this.get('price'))});
     }
   });
 
@@ -28,15 +27,15 @@
     tagName: 'tr',
 
     initialize: function() {
-      _.bindAll(this, 'render', 'updateQuantity', 'updatePrice', 'updateAmount', 'inputChanged');
-      this.model.bind('change:quantity', this.updateQuantity);
-      this.model.bind('change:price', this.updatePrice);
-      this.model.bind('change:amount', this.updateAmount);
+      _.bindAll(this, 'render', 'changeQuantity', 'changePrice', 'changeAmount', 'inputKeyup');
+      this.model.bind('change:quantity', this.changeQuantity);
+      this.model.bind('change:price', this.changePrice);
+      this.model.bind('change:amount', this.changeAmount);
       this.template = _.template($('#row-template').html());
     },
 
     events: {
-      'keyup input': 'inputChanged'
+      'keyup input': 'inputKeyup'
     },
 
     render: function() {
@@ -44,23 +43,23 @@
       return this;
     },
 
-    updateQuantity: function() {
+    changeQuantity: function() {
       $(this.el).find('input.quantity').val(this.model.get('quantity'));
     },
-    updatePrice: function() {
+    changePrice: function() {
+      console.log('changePrice');
       $(this.el).find('input.price').val(this.model.get('price'));
     },
-    updateAmount: function() {
+    changeAmount: function() {
       $(this.el).find('input.amount').val(this.model.get('amount'));
     },
 
-    inputChanged: function(e) {
-      console.log('inputChanged()');
+    inputKeyup: function(e) {
       var property = $(e.currentTarget).attr('class');
       var value = $(e.currentTarget).val();
       var data = {};
       data[property] = value;
-      this.model.keypress(data);
+      this.model.keyup(data);
     }
   });
  
@@ -89,7 +88,7 @@
 })(jQuery);
 
 $(function() {
-  sample = new Details([{quantity:2,price:3,amount:6},{quantity:4,price:6,amount:24}]);
+  sample = new Details([{quantity:2,price:3,amount:1},{quantity:4,price:6,amount:24}]);
   view = new DetailsView({collection:sample});
   $('body').html(view.render().el);
 });
