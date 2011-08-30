@@ -5,17 +5,29 @@
       _.bindAll(this, 'calculateAmount', 'keyup');
     },
 
-    keyup: function(data) {
-      if (data['price'] != null && data['price'] != this.get('price')) {
-        this.set({price: data['price']}, {silent: true});
-        this.calculateAmount();
-      } else if (data['quantity'] != null && data['quantity'] != this.get('quantity')) {
-        this.set({quantity: data['quantity']}, {silent: true});
-        this.calculateAmount();
-      } else if (data['amount'] != null && data['amount'] != this.get('amount')) {
-        this.set({amount: data['amount']}, {silent: true});
-        this.set({price: ''});
+    processKeyup: {
+      price: function(model, value) {
+        if (value != model.get('price')) {
+          model.set({price: value}, {silent: true});
+          model.calculateAmount();
+        }
+      },
+      quantity: function(model, value) {
+        if (value != model.get('quantity')) {
+          model.set({quantity: value}, {silent: true});
+          model.calculateAmount();
+        }
+      },
+      amount: function(model, value) {
+        if (value != model.get('amount')) {
+          model.set({amount: value}, {silent: true});
+          model.set({price: ''});
+        }
       }
+    },
+
+    keyup: function(data) {
+      this.processKeyup[_.keys(data)[0]](this, _.values(data)[0]);
     },
 
     calculateAmount: function() {
