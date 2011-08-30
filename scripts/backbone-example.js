@@ -56,17 +56,17 @@
     },
 
     changeQuantity: function() {
-      $(this.el).find('input.quantity').val(this.model.get('quantity'));
+      $(this.el).find('input[property=quantity]').val(this.model.get('quantity'));
     },
     changePrice: function() {
-      $(this.el).find('input.price').val(this.model.get('price'));
+      $(this.el).find('input[property=price]').val(this.model.get('price'));
     },
     changeAmount: function() {
-      $(this.el).find('input.amount').val(this.model.get('amount'));
+      $(this.el).find('input[property=amount]').val(this.model.get('amount'));
     },
 
     keyupInput: function(e) {
-      var property = $(e.currentTarget).attr('class');
+      var property = $(e.currentTarget).attr('property');
       var value = $(e.currentTarget).val();
       var data = {};
       data[property] = value;
