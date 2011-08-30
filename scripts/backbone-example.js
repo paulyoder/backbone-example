@@ -27,7 +27,7 @@
     tagName: 'tr',
 
     initialize: function() {
-      _.bindAll(this, 'render', 'changeQuantity', 'changePrice', 'changeAmount', 'inputKeyup');
+      _.bindAll(this, 'render', 'changeQuantity', 'changePrice', 'changeAmount', 'keyupInput');
       this.model.bind('change:quantity', this.changeQuantity);
       this.model.bind('change:price', this.changePrice);
       this.model.bind('change:amount', this.changeAmount);
@@ -35,7 +35,7 @@
     },
 
     events: {
-      'keyup input': 'inputKeyup'
+      'keyup input': 'keyupInput'
     },
 
     render: function() {
@@ -47,14 +47,13 @@
       $(this.el).find('input.quantity').val(this.model.get('quantity'));
     },
     changePrice: function() {
-      console.log('changePrice');
       $(this.el).find('input.price').val(this.model.get('price'));
     },
     changeAmount: function() {
       $(this.el).find('input.amount').val(this.model.get('amount'));
     },
 
-    inputKeyup: function(e) {
+    keyupInput: function(e) {
       var property = $(e.currentTarget).attr('class');
       var value = $(e.currentTarget).val();
       var data = {};
