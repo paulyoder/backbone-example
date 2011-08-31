@@ -27,7 +27,9 @@
     },
 
     keyup: function(data) {
-      this.processKeyup[_.keys(data)[0]](this, _.values(data)[0]);
+      var property = _.keys(data)[0];
+      var value = _.values(data)[0];
+      this.processKeyup[property](this, value);
     },
 
     calculateAmount: function() {
