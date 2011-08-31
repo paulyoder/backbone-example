@@ -137,16 +137,15 @@
   });
 
   window.DetailsView = Backbone.View.extend({
-    el: '#container',
+    tagName: 'table',
 
     initialze: function() {
       _.bindAll(this, 'render');
     },
     
     render: function() {
-      $(this.el).empty();
-      $(this.el).html($('#details-template').html());
-      $table = $(this.el).find('table:first');
+      $table = $(this.el);
+      $table.html($('#details-template').html());
       this.collection.each(function(detail) {
         var detailView = new DetailView({model: detail});
         $table.append(detailView.render().el);
