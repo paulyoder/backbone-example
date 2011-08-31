@@ -24,7 +24,11 @@
 
     //add commas before returning
     return number.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'); 
-  };    
+  };
+
+  option = function(text, value) {
+    return '<option value="' + value + '">' + text + '</option>';
+  };
 
   window.Detail = Backbone.Model.extend({
     initialize: function() {
@@ -86,12 +90,23 @@
       this.template = _.template($('#row-template').html());
     },
 
+    detailTypes: {
+      1: 'Indiana',
+      2: 'Nebraska',
+      3: 'Colorado'
+    },
+
     events: {
       'keyup input': 'keyupInput'
     },
 
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
+      var select = $(this.el).find('select');
+      _.each(this.detailTypes, function(text, value) {
+        select.append(option(text, value));
+      });
+      select.find('option[value=' + this.model.get('detailTypeId') + ']').attr('selected', 'selected');
       return this;
     },
 
@@ -142,7 +157,7 @@
 })(jQuery);
 
 $(function() {
-  sample = new Details([{quantity:2,price:3,amount:1},{quantity:4,price:6,amount:24}]);
+  sample = new Details([{detailTypeId:1,quantity:2,price:3,amount:1},{detailTypeId:3,quantity:4,price:6,amount:24}]);
   view = new DetailsView({collection:sample});
   $('body').html(view.render().el);
 });
