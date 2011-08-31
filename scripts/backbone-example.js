@@ -139,8 +139,9 @@
   window.DetailsView = Backbone.View.extend({
     tagName: 'table',
 
-    initialze: function() {
-      _.bindAll(this, 'render');
+    initialize: function() {
+      _.bindAll(this, 'render', 'detailAdded');
+      this.collection.bind('add', this.detailAdded);
     },
     
     render: function() {
@@ -151,6 +152,10 @@
         $table.append(detailView.render().el);
       }); 
       return this;
+    },
+
+    detailAdded: function(detail) {
+      $(this.el).append(new DetailView({model: detail}).render().el);
     }
   });
 
@@ -159,5 +164,9 @@
 $(function() {
   sample = new Details([{detailTypeId:1,quantity:2,price:3,amount:1},{detailTypeId:3,quantity:4,price:6,amount:24}]);
   view = new DetailsView({collection:sample});
-  $('body').html(view.render().el);
+  $('#container').prepend(view.render().el);
+
+  $('#addRow').click(function() {
+    sample.add(new Detail({detailTypeId:2,quantity:5,price:4,amount:20}));
+  });
 });
