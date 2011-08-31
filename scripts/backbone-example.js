@@ -64,7 +64,7 @@
       amount: function(model, value) {
         if (value == model.get('amount')) { return; }
         model.set({price: ''});
-        model.set({amount: value}, {silent: true});
+        //model.set({amount: value}, {silent: true});
         model.set({amount: model.format.amount(value)});
       }
     },
@@ -124,7 +124,10 @@
     },
     changeAmount: function() {
       console.log('changeAmount');
-      $(this.el).find('input[property=amount]').val(this.model.get('amount'));
+      var input = $(this.el).find('input[property=amount]');
+      if (input.val() != this.model.get('amount')) {
+        input.val(this.model.get('amount'));
+      }
     },
 
     keyupInput: function(e) {
@@ -153,7 +156,7 @@
       _.bindAll(this, 'render', 'detailAdded', 'click_AddRow', 'calculateCollectionTotals');
       this.collection.bind('add', this.detailAdded);
       this.collection.bind('add', this.calculateCollectionTotals);
-      this.collection.bind('change', this.calculateCollectionTotals);
+      this.collection.bind('change:amount', this.calculateCollectionTotals);
     },
 
     events: { 'click #addRow': 'click_AddRow' },
