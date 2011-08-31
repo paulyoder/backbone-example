@@ -28,27 +28,37 @@
 
   window.Detail = Backbone.Model.extend({
     initialize: function() {
-      _.bindAll(this, 'calculateAmount', 'keyup');
+      _.bindAll(this, 'calculateAmount', 'keyup', 'getNumber');
+    },
+
+    format: {
+      price:    function(value) { return formatNumber(value, 9, 2, true); },
+      quantity: function(value) { return formatNumber(value, 9, 2, true); },
+      amount:   function(value) { return formatNumber(value, 9, 0, true); }
+    },
+    
+    getNumber: function(property) {
+      return Number(this.get(property).toString().replace(/,/g,''));
     },
 
     processKeyup: {
       price: function(model, value) {
-        if (value != model.get('price')) {
-          model.set({price: value}, {silent: true});
-          model.calculateAmount();
-        }
+        if (value == model.get('price')) { return; }
+        model.set({price: value}, {silent: true});
+        model.set({price: model.format.price(value)});
+        model.calculateAmount(); 
       },
       quantity: function(model, value) {
-        if (value != model.get('quantity')) {
-          model.set({quantity: value}, {silent: true});
-          model.calculateAmount();
-        }
+        if (value == model.get('quantity')) { return; }
+        model.set({quantity: value}, {silent: true});
+        model.set({quantity: model.format.quantity(value)});
+        model.calculateAmount();
       },
       amount: function(model, value) {
-        if (value != model.get('amount')) {
-          model.set({amount: value}, {silent: true});
-          model.set({price: ''});
-        }
+        if (value == model.get('amount')) { return; }
+        model.set({price: ''});
+        model.set({amount: value}, {silent: true});
+        model.set({amount: model.format.amount(value)});
       }
     },
 
@@ -59,7 +69,9 @@
     },
 
     calculateAmount: function() {
-      this.set({amount: (this.get('quantity') * this.get('price'))});
+      console.log('calculateAmount');
+      var product = this.getNumber('quantity') * this.getNumber('price');
+      this.set({amount: this.format.amount(product.toString())});
     }
   });
 
@@ -84,12 +96,15 @@
     },
 
     changeQuantity: function() {
+      console.log('changeQuantity');
       $(this.el).find('input[property=quantity]').val(this.model.get('quantity'));
     },
     changePrice: function() {
+      console.log('changePrice');
       $(this.el).find('input[property=price]').val(this.model.get('price'));
     },
     changeAmount: function() {
+      console.log('changeAmount');
       $(this.el).find('input[property=amount]').val(this.model.get('amount'));
     },
 
