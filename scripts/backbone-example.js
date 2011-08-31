@@ -97,7 +97,8 @@
     },
 
     events: {
-      'keyup input': 'keyupInput'
+      'keyup input': 'keyupInput',
+      'change select': 'changeSelect'
     },
 
     render: function() {
@@ -129,6 +130,12 @@
       var data = {};
       data[property] = value;
       this.model.keyup(data);
+    },
+
+    changeSelect: function(e) {
+      console.log('changeSelect');
+      var value = $(this.el).find('select option:selected').val();
+      this.model.set({detailTypeId: value});
     }
   });
  
