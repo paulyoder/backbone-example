@@ -1,6 +1,9 @@
 (function($) {
 
   formatNumber = function(number, maxLength, decimalPlaces, allowNegative) {
+    if (typeof(number) == 'number') {
+      number = number.toString();
+    }
     //scrub number
     number = number.replace(/[^-\.0-9]/g,'')            //only keep numbers, negative and decimal
                    .replace(/--+/g,'-')                 //delete multiple negatives
@@ -75,7 +78,7 @@
     calculateAmount: function() {
       console.log('calculateAmount');
       var product = this.getNumber('quantity') * this.getNumber('price');
-      this.set({amount: this.format.amount(product.toString())});
+      this.set({amount: this.format.amount(product)});
     }
   });
 
@@ -147,8 +150,10 @@
     el: '#container',
 
     initialize: function() {
-      _.bindAll(this, 'render', 'detailAdded', 'click_AddRow');
+      _.bindAll(this, 'render', 'detailAdded', 'click_AddRow', 'calculateCollectionTotals');
       this.collection.bind('add', this.detailAdded);
+      this.collection.bind('add', this.calculateCollectionTotals);
+      this.collection.bind('change', this.calculateCollectionTotals);
     },
 
     events: { 'click #addRow': 'click_AddRow' },
@@ -156,20 +161,32 @@
     render: function() {
       $(this.el).empty();
       $(this.el).html($('#details-template').html());
-      $table = $(this.el).find('table:first');
+      this.totalsRow = $(this.el).find('table:first tr:last');
+      var totalsRow = this.totalsRow;
       this.collection.each(function(detail) {
         var detailView = new DetailView({model: detail});
-        $table.append(detailView.render().el);
+        totalsRow.before(detailView.render().el);
       }); 
+      this.calculateCollectionTotals();
       return this;
     },
 
     detailAdded: function(detail) {
-      $(this.el).find('table:first').append(new DetailView({model: detail}).render().el);
+      this.totalsRow.before(new DetailView({model: detail}).render().el);
     },
 
     click_AddRow: function() {
       this.collection.add(new Detail({detailTypeId:2,quantity:5,price:4,amount:20}));
+    },
+
+    calculateCollectionTotals: function() {
+      console.log('calculateCollectionTotals');
+      var amounts = _.map(this.collection.models, function(detail) {
+        return detail.getNumber('amount');
+      });
+      var total = _.reduce(amounts, function(sum, amount) { return sum + amount; }, 0);
+      var formattedTotal = formatNumber(total, 0, 0, true);
+      this.totalsRow.find('td:last').html(formattedTotal);
     }
   });
 
