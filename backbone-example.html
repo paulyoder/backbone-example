@@ -9,12 +9,15 @@
     <script type='text/javascript' src='scripts/backbone-example.js'></script>
 
     <script type='text/template' id='details-template'>
-      <tr>
-        <th>Type</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Amount</th>
-      </tr>
+      <table>
+        <tr>
+          <th>Type</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Amount</th>
+        </tr>
+      </table>
+      <button id='addRow'>Add Row</button>
     </script>
 
     <script type='text/template' id='row-template'>
@@ -27,8 +30,6 @@
     </script>
   </head>
   <body>
-    <div id='container'>
-      <button id='addRow'>Add Row</div>
-    </div>
+    <div id='container'></div>
   </body>
 </html>

@@ -144,16 +144,19 @@
   });
 
   window.DetailsView = Backbone.View.extend({
-    tagName: 'table',
+    el: '#container',
 
     initialize: function() {
-      _.bindAll(this, 'render', 'detailAdded');
+      _.bindAll(this, 'render', 'detailAdded', 'click_AddRow');
       this.collection.bind('add', this.detailAdded);
     },
+
+    events: { 'click #addRow': 'click_AddRow' },
     
     render: function() {
-      $table = $(this.el);
-      $table.html($('#details-template').html());
+      $(this.el).empty();
+      $(this.el).html($('#details-template').html());
+      $table = $(this.el).find('table:first');
       this.collection.each(function(detail) {
         var detailView = new DetailView({model: detail});
         $table.append(detailView.render().el);
@@ -162,7 +165,11 @@
     },
 
     detailAdded: function(detail) {
-      $(this.el).append(new DetailView({model: detail}).render().el);
+      $(this.el).find('table:first').append(new DetailView({model: detail}).render().el);
+    },
+
+    click_AddRow: function() {
+      this.collection.add(new Detail({detailTypeId:2,quantity:5,price:4,amount:20}));
     }
   });
 
@@ -170,10 +177,6 @@
 
 $(function() {
   sample = new Details([{detailTypeId:1,quantity:2,price:3,amount:1},{detailTypeId:3,quantity:4,price:6,amount:24}]);
-  view = new DetailsView({collection:sample});
-  $('#container').prepend(view.render().el);
-
-  $('#addRow').click(function() {
-    sample.add(new Detail({detailTypeId:2,quantity:5,price:4,amount:20}));
-  });
+  view = new DetailsView({collection:sample, el:'#container'});
+  view.render();
 });
